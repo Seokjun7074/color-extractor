@@ -1,11 +1,6 @@
 @import 'tailwindcss';
 
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+/* @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -19,5 +14,20 @@
   }
 } */
 
+@theme {
+  --color-success: #0e9f6e;
+  --color-error: #f05252;
+  --color-primary: var(--color-blue-500);
+  --color-primary-hover: var(--color-blue-600);
+}
+
+/* 특정 태그에 대해 디폴트 css 생성 */
+@layer components {
+  button {
+    cursor: pointer;
+  }
+}
+
 body {
+  background-color: #f5f5f7;
 }
