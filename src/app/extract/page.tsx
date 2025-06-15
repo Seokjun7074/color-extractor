@@ -7,6 +7,7 @@ export default function ExtractPage() {
   const [image, setImage] = useState<string | undefined>(undefined);
   const [color, setColor] = useState<string>('#000');
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const imageRef = useRef<HTMLInputElement>(null);
 
   const saveImgFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,11 +22,9 @@ export default function ExtractPage() {
   const setImageToCanvas = (imageURL: string) => {
     const img = new Image();
     img.onload = () => {
+      if (!canvasRef.current || !ctxRef.current) return;
       const canvas = canvasRef.current;
-      if (!canvas) return;
-
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      const ctx = ctxRef.current;
 
       // 캔버스 크기 설정 (이미지 크기에 맞게)
       canvas.width = img.width;
@@ -43,8 +42,8 @@ export default function ExtractPage() {
   };
 
   const pickColor = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!canvasRef.current) return;
     const canvas = canvasRef.current;
-    if (!canvas) return;
 
     const hexColor = getHexColor(canvas, e.clientX, e.clientY);
     console.log(hexColor);
@@ -52,8 +51,8 @@ export default function ExtractPage() {
   };
 
   const getHexColor = (canvas: HTMLCanvasElement, clientX: number, clientY: number): string => {
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!ctx) return '';
+    if (!ctxRef.current) return '';
+    const ctx = ctxRef.current;
 
     const bounding = canvas.getBoundingClientRect();
     console.log(canvas.width, bounding.width);
@@ -70,6 +69,11 @@ export default function ExtractPage() {
   };
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      ctxRef.current = canvas.getContext('2d');
+    }
+
     return () => {
       if (image) {
         URL.revokeObjectURL(image);
