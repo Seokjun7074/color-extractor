@@ -1,5 +1,6 @@
 'use client';
 
+import ImageUploadButton from '@/app/extract/components/ImageUploadButton';
 import { useImageUpload } from '@/app/extract/hooks/useImageUpload';
 import { rgbToHex } from '@/utils/colorConverter';
 import { useEffect, useRef } from 'react';
@@ -8,7 +9,6 @@ export default function ExtractPage() {
   const { imageURL, saveImgFile } = useImageUpload();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const setImageToCanvas = (imageURL: string) => {
     const img = new Image();
@@ -17,19 +17,12 @@ export default function ExtractPage() {
       const canvas = canvasRef.current;
       const ctx = ctxRef.current;
 
-      // 캔버스 크기 설정 (이미지 크기에 맞게)
       canvas.width = img.width;
       canvas.height = img.height;
 
-      // 이미지 그리기
       ctx.drawImage(img, 0, 0);
     };
     img.src = imageURL;
-  };
-
-  const clickImageInput = () => {
-    if (!imageInputRef.current) return;
-    imageInputRef.current.click();
   };
 
   const pickColor = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -79,13 +72,7 @@ export default function ExtractPage() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-4">
-      <input className="hidden" type="file" accept="image/*" ref={imageInputRef} onChange={saveImgFile} />
-      <button
-        className="bg-primary hover:bg-primary-hover w-sm rounded-md p-2 text-sm text-white"
-        onClick={clickImageInput}
-      >
-        사진 추가하기
-      </button>
+      <ImageUploadButton saveImgFile={saveImgFile} />
       <canvas className="h-auto w-sm bg-blue-100" ref={canvasRef} onClick={pickColor}></canvas>
     </div>
   );
