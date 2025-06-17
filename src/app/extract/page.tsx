@@ -1,8 +1,8 @@
 'use client';
 
-import ImageUploadButton from '@/app/extract/components/ImageUploadButton';
-import { useCanvasImage } from '@/app/extract/hooks/useCanvasImage';
-import { useImageUpload } from '@/app/extract/hooks/useImageUpload';
+import ImageUploadButton from '@/domains/extract/components/ImageUploadButton';
+import { useCanvasImage } from '@/domains/extract/hooks/useCanvasImage';
+import { useImageUpload } from '@/domains/extract/hooks/useImageUpload';
 import { useEffect } from 'react';
 
 export default function ExtractPage() {
