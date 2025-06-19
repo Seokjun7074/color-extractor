@@ -1,3 +1,4 @@
+import { RGBProp } from '@/types/color';
 import { useEffect, useRef } from 'react';
 
 export const useCanvasImage = () => {
@@ -30,14 +31,15 @@ export const useCanvasImage = () => {
     const canvas = canvasRef.current;
 
     const allPixelData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = splitPixelRGBA(allPixelData.data);
     // console.log(splitPixelRGBA(allPixelData.data));
-    return allPixelData.data;
+    return data;
   };
 
   /**
    * 현재 클릭한 Canvas 좌표의 RGBA값을 반환 합니다.
    */
-  const getPixelImageData = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const getPixelImageData = (e: React.MouseEvent<HTMLCanvasElement>): RGBProp | undefined => {
     if (!ctxRef.current || !canvasRef.current) return;
     const ctx = ctxRef.current;
     const canvas = canvasRef.current;
@@ -52,22 +54,25 @@ export const useCanvasImage = () => {
     const pixel = ctx.getImageData(x, y, 1, 1);
 
     const data = pixel.data;
-    console.log('This pixel data', data);
-    return data;
+    console.log('This pixel data', [data[0], data[1], data[2]]);
+    return { r: data[0], g: data[1], b: data[2] };
   };
 
   /**
    * RGBA값만 배열에 담아 반환합니다.
    */
-  const splitPixelRGBA = (rgbaList: Uint8ClampedArray<ArrayBufferLike>) => {
-    const allRGBAList = [];
+  const splitPixelRGBA = (rgbaList: Uint8ClampedArray<ArrayBufferLike>): RGBProp[] => {
+    const allRGBAList: RGBProp[] = [];
 
-    for (let i = 0; i < rgbaList.length; i += 4) {
+    for (let i = 0; i < rgbaList.length; i += 3) {
       const r = rgbaList[i];
       const g = rgbaList[i + 1];
       const b = rgbaList[i + 2];
-      const a = rgbaList[i + 3];
-      allRGBAList.push([r, g, b, a]);
+      allRGBAList.push({
+        r,
+        g,
+        b,
+      });
     }
     return allRGBAList;
   };
