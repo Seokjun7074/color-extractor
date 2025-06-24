@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react';
 export const useCanvasImage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const maxWidth = 500;
+  const maxHeight = 500;
 
   const setImageToCanvas = (imageURL: string): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -14,9 +16,26 @@ export const useCanvasImage = () => {
         if (!canvasRef.current || !ctxRef.current) return reject('canvas or ctx is null');
         const canvas = canvasRef.current;
         const ctx = ctxRef.current;
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
+
+        // 원본 비율 계산
+        const ratio = img.width / img.height;
+
+        // 새 크기 계산
+        let newWidth = img.width;
+        let newHeight = img.height;
+
+        if (img.width > maxWidth) {
+          newWidth = maxWidth;
+          newHeight = Math.round(maxWidth / ratio);
+        }
+        if (newHeight > maxHeight) {
+          newHeight = maxHeight;
+          newWidth = Math.round(maxHeight * ratio);
+        }
+
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        ctx.drawImage(img, 0, 0, newWidth, newHeight);
         resolve();
       };
       img.onerror = reject;
@@ -68,11 +87,7 @@ export const useCanvasImage = () => {
       const r = rgbaList[i];
       const g = rgbaList[i + 1];
       const b = rgbaList[i + 2];
-      allRGBAList.push({
-        r,
-        g,
-        b,
-      });
+      allRGBAList.push({ r, g, b });
     }
     return allRGBAList;
   };
