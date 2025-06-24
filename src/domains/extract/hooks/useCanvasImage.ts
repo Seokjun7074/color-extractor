@@ -64,7 +64,7 @@ export const useCanvasImage = () => {
   const splitPixelRGBA = (rgbaList: Uint8ClampedArray<ArrayBufferLike>): RGBProp[] => {
     const allRGBAList: RGBProp[] = [];
 
-    for (let i = 0; i < rgbaList.length; i += 3) {
+    for (let i = 0; i < rgbaList.length; i += 4) {
       const r = rgbaList[i];
       const g = rgbaList[i + 1];
       const b = rgbaList[i + 2];
