@@ -4,8 +4,27 @@ import { useEffect, useRef } from 'react';
 export const useCanvasImage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
-  const maxWidth = 500;
-  const maxHeight = 500;
+
+  const getImageSize = (img: HTMLImageElement) => {
+    const maxWidth = 500;
+    const maxHeight = 500;
+    // 원본 비율 계산
+    const ratio = img.width / img.height;
+    // 새 크기 계산
+    let newWidth = img.width;
+    let newHeight = img.height;
+
+    if (img.width > maxWidth) {
+      newWidth = maxWidth;
+      newHeight = Math.round(maxWidth / ratio);
+    }
+    if (newHeight > maxHeight) {
+      newHeight = maxHeight;
+      newWidth = Math.round(maxHeight * ratio);
+    }
+
+    return { newWidth, newHeight };
+  };
 
   const setImageToCanvas = (imageURL: string): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -17,22 +36,7 @@ export const useCanvasImage = () => {
         const canvas = canvasRef.current;
         const ctx = ctxRef.current;
 
-        // 원본 비율 계산
-        const ratio = img.width / img.height;
-
-        // 새 크기 계산
-        let newWidth = img.width;
-        let newHeight = img.height;
-
-        if (img.width > maxWidth) {
-          newWidth = maxWidth;
-          newHeight = Math.round(maxWidth / ratio);
-        }
-        if (newHeight > maxHeight) {
-          newHeight = maxHeight;
-          newWidth = Math.round(maxHeight * ratio);
-        }
-
+        const { newWidth, newHeight } = getImageSize(img);
         canvas.width = newWidth;
         canvas.height = newHeight;
         ctx.drawImage(img, 0, 0, newWidth, newHeight);
