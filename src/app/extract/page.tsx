@@ -2,14 +2,19 @@
 
 import ImageUploadButton from '@/domains/extract/components/ImageUploadButton';
 import { useCanvasImage } from '@/domains/extract/hooks/useCanvasImage';
+import { useCanvasPixelData } from '@/domains/extract/hooks/useCanvasPixelData';
 import { useClusteredColor } from '@/domains/extract/hooks/useClusteredColor';
 import { useImageUpload } from '@/domains/extract/hooks/useImageUpload';
 import { kMeans } from '@/utils/kMeans';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function ExtractPage() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+
   const { imageURL, saveImgFile } = useImageUpload();
-  const { canvasRef, setImageToCanvas, getPixelImageData, getContextImageData } = useCanvasImage();
+  const { setImageToCanvas } = useCanvasImage(canvasRef, ctxRef);
+  const { getContextImageData, getPixelImageData } = useCanvasPixelData(canvasRef, ctxRef);
   const { colors, setClusteredHex } = useClusteredColor();
 
   useEffect(() => {
@@ -26,6 +31,13 @@ export default function ExtractPage() {
 
     initCanvasImage(imageURL);
   }, [imageURL]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      ctxRef.current = canvas.getContext('2d', { willReadFrequently: true });
+    }
+  }, []);
 
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-4">
