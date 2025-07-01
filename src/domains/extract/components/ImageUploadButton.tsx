@@ -16,7 +16,7 @@ export default function ImageUploadButton({ saveImgFile }: Prop) {
     <>
       <input className="hidden" type="file" accept="image/*" ref={imageInputRef} onChange={saveImgFile} />
       <button
-        className="bg-primary hover:bg-primary-hover w-sm rounded-md p-2 text-sm text-white"
+        className="bg-primary hover:bg-primary-hover w-full rounded-md p-2 text-sm text-white"
         onClick={clickImageInput}
       >
         사진 추가하기
