@@ -10,7 +10,7 @@ export function useColorExtractProcess() {
   const { canvasRef, ctxRef } = useCanvasContext();
   const { imageURL, saveImgFile } = useImageUpload();
   const { setImageToCanvas } = useCanvasImage(canvasRef, ctxRef);
-  const { getContextImageData, getPixelImageData } = useCanvasPixelData(canvasRef, ctxRef);
+  const { getContextImageData, getClickedPixelImageData } = useCanvasPixelData(canvasRef, ctxRef);
   const { colors, setClusteredHex } = useClusteredColor();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export function useColorExtractProcess() {
 
   return {
     canvasRef,
-    getPixelImageData,
+    getClickedPixelImageData, // 지금은 사용하지 않음
     saveImgFile,
     colors,
   };

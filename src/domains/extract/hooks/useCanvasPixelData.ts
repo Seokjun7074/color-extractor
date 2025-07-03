@@ -21,7 +21,7 @@ export const useCanvasPixelData = (
   /**
    * 현재 클릭한 Canvas 좌표의 RGBA값을 반환 합니다.
    */
-  const getPixelImageData = (e: React.MouseEvent<HTMLCanvasElement>): RGBProp | undefined => {
+  const getClickedPixelImageData = (e: React.MouseEvent<HTMLCanvasElement>): RGBProp | undefined => {
     if (!ctxRef.current || !canvasRef.current) return;
     const ctx = ctxRef.current;
     const canvas = canvasRef.current;
@@ -55,5 +55,5 @@ export const useCanvasPixelData = (
     return allRGBAList;
   };
 
-  return { getContextImageData, getPixelImageData };
+  return { getContextImageData, getClickedPixelImageData };
 };
