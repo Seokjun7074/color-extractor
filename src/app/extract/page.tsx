@@ -2,16 +2,16 @@
 
 import ExtractedColor from '@/domains/extract/components/ExtractedColor';
 import ImageUploadButton from '@/domains/extract/components/ImageUploadButton';
+import { useCanvasContext } from '@/domains/extract/hooks/useCanvasContext';
 import { useCanvasImage } from '@/domains/extract/hooks/useCanvasImage';
 import { useCanvasPixelData } from '@/domains/extract/hooks/useCanvasPixelData';
 import { useClusteredColor } from '@/domains/extract/hooks/useClusteredColor';
 import { useImageUpload } from '@/domains/extract/hooks/useImageUpload';
 import { kMeans } from '@/utils/kMeans';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export default function ExtractPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const { canvasRef, ctxRef } = useCanvasContext();
 
   const { imageURL, saveImgFile } = useImageUpload();
   const { setImageToCanvas } = useCanvasImage(canvasRef, ctxRef);
@@ -32,13 +32,6 @@ export default function ExtractPage() {
 
     initCanvasImage(imageURL);
   }, [imageURL]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      ctxRef.current = canvas.getContext('2d', { willReadFrequently: true });
-    }
-  }, []);
 
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-4">
