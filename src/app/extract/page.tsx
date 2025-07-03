@@ -1,5 +1,6 @@
 'use client';
 
+import ExtractedColor from '@/domains/extract/components/ExtractedColor';
 import ImageUploadButton from '@/domains/extract/components/ImageUploadButton';
 import { useCanvasImage } from '@/domains/extract/hooks/useCanvasImage';
 import { useCanvasPixelData } from '@/domains/extract/hooks/useCanvasPixelData';
@@ -48,15 +49,7 @@ export default function ExtractPage() {
           onClick={getPixelImageData}
         ></canvas>
         <ImageUploadButton saveImgFile={saveImgFile} />
-        <div className="flex justify-around gap-1">
-          {colors.map((item) => (
-            <div
-              key={item}
-              className="h-10 w-10 rounded-md border-1 border-gray-600"
-              style={{ backgroundColor: item }}
-            />
-          ))}
-        </div>
+        <ExtractedColor colors={colors} />
       </div>
     </div>
   );
