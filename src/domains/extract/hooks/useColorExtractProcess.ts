@@ -1,3 +1,4 @@
+import { RGBProp } from '@/types/color';
 import { useCanvasContext } from './useCanvasContext';
 import { useCanvasImage } from './useCanvasImage';
 import { useCanvasPixelData } from './useCanvasPixelData';
@@ -6,12 +7,26 @@ import { useImageUpload } from './useImageUpload';
 import { kMeans } from '@/utils/kMeans';
 import { useEffect } from 'react';
 
+const KMEANS_WEIGHT = 6;
+
 export function useColorExtractProcess() {
   const { canvasRef, ctxRef } = useCanvasContext();
   const { imageURL, saveImgFile } = useImageUpload();
   const { setImageToCanvas } = useCanvasImage(canvasRef, ctxRef);
   const { getContextImageData, getClickedPixelImageData } = useCanvasPixelData(canvasRef, ctxRef);
   const { colors, setClusteredHex } = useClusteredColor();
+
+  const extractByKmeans = (allPixelData: RGBProp[], KMEANS_WEIGHT: number) => {
+    const kmeansWorker = new Worker(new URL('/src/workers/kmeansWorker.ts', import.meta.url));
+    kmeansWorker.postMessage({ allPixelData, KMEANS_WEIGHT });
+    kmeansWorker.onmessage = (e) => {
+      const { isSuccess, result } = e.data;
+      if (isSuccess) {
+        setClusteredHex(result);
+        kmeansWorker.terminate();
+      }
+    };
+  };
 
   useEffect(() => {
     if (!imageURL) return;
@@ -20,8 +35,7 @@ export function useColorExtractProcess() {
       await setImageToCanvas(imageURL);
       const allPixelData = getContextImageData();
       if (allPixelData) {
-        const clusteredData = kMeans(allPixelData, 6);
-        setClusteredHex(clusteredData);
+        extractByKmeans(allPixelData, KMEANS_WEIGHT);
       }
     };
 
