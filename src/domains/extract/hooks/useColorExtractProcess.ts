@@ -5,11 +5,12 @@ import { useClusteredColor } from '@/domains/extract/hooks/useClusteredColor';
 import { useImageUpload } from '@/domains/extract/hooks/useImageUpload';
 import { RGBProp } from '@/types/color';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const KMEANS_WEIGHT = 6;
 
 export function useColorExtractProcess() {
+  const [isLoading, setIsLoading] = useState(false);
   const { canvasRef, ctxRef } = useCanvasContext();
   const { imageURL, saveImgFile } = useImageUpload();
   const { setImageToCanvas } = useCanvasImage(canvasRef, ctxRef);
@@ -23,6 +24,7 @@ export function useColorExtractProcess() {
       const { isSuccess, result } = e.data;
       if (isSuccess) {
         setClusteredHex(result);
+        setIsLoading(false);
         kmeansWorker.terminate();
       }
     };
@@ -32,6 +34,7 @@ export function useColorExtractProcess() {
     if (!imageURL) return;
 
     const process = async () => {
+      setIsLoading(true);
       await setImageToCanvas(imageURL);
       const allPixelData = await getContextImageData(imageURL);
       if (allPixelData.length > 0) {
@@ -47,5 +50,6 @@ export function useColorExtractProcess() {
     getClickedPixelImageData, // 지금은 사용하지 않음
     saveImgFile,
     colors,
+    isLoading,
   };
 }
