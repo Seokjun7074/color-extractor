@@ -4,17 +4,58 @@ export const useCanvasPixelData = (
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
   ctxRef: React.RefObject<CanvasRenderingContext2D | null>,
 ) => {
+  const getResizedImageSize = (img: HTMLImageElement) => {
+    const maxWidth = 500;
+    const maxHeight = 500;
+    // 원본 비율 계산
+    const ratio = img.width / img.height;
+    // 새 크기 계산
+    let newWidth = img.width;
+    let newHeight = img.height;
+
+    if (img.width > maxWidth) {
+      newWidth = maxWidth;
+      newHeight = Math.round(maxWidth / ratio);
+    }
+    if (newHeight > maxHeight) {
+      newHeight = maxHeight;
+      newWidth = Math.round(maxHeight * ratio);
+    }
+
+    return { newWidth, newHeight };
+  };
+
+  const createOffCanvas = (
+    imageURL: string,
+  ): Promise<{ offCanvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D }> => {
+    const offCanvas = document.createElement('canvas');
+    const ctx = offCanvas.getContext('2d');
+
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = imageURL;
+
+      img.onload = () => {
+        if (!ctx) return;
+
+        const { newWidth, newHeight } = getResizedImageSize(img);
+        offCanvas.width = newWidth;
+        offCanvas.height = newHeight;
+        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+        resolve({ offCanvas, ctx });
+      };
+      img.onerror = reject;
+    });
+  };
   /**
    * Canvas 전체 영역 픽셀들의 RGBA값을 반환합니다.
    */
-  const getContextImageData = () => {
-    if (!ctxRef.current || !canvasRef.current) return;
-    const ctx = ctxRef.current;
-    const canvas = canvasRef.current;
+  const getContextImageData = async (imageURL: string): Promise<RGBProp[]> => {
+    if (!ctxRef.current || !canvasRef.current) return [];
 
-    const allPixelData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const { offCanvas, ctx } = await createOffCanvas(imageURL);
+    const allPixelData = ctx.getImageData(0, 0, offCanvas.width, offCanvas.height);
     const data = splitPixelRGBA(allPixelData.data);
-    // console.log(splitPixelRGBA(allPixelData.data));
     return data;
   };
 

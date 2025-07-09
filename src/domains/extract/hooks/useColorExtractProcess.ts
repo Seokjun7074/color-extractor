@@ -4,7 +4,6 @@ import { useCanvasImage } from './useCanvasImage';
 import { useCanvasPixelData } from './useCanvasPixelData';
 import { useClusteredColor } from './useClusteredColor';
 import { useImageUpload } from './useImageUpload';
-import { kMeans } from '@/utils/kMeans';
 import { useEffect } from 'react';
 
 const KMEANS_WEIGHT = 6;
@@ -33,8 +32,8 @@ export function useColorExtractProcess() {
 
     const process = async () => {
       await setImageToCanvas(imageURL);
-      const allPixelData = getContextImageData();
-      if (allPixelData) {
+      const allPixelData = await getContextImageData(imageURL);
+      if (allPixelData.length > 0) {
         extractByKmeans(allPixelData, KMEANS_WEIGHT);
       }
     };
