@@ -1,9 +1,10 @@
+import { useCanvasContext } from '@/domains/extract/hooks/useCanvasContext';
+import { useCanvasImage } from '@/domains/extract/hooks/useCanvasImage';
+import { useCanvasPixelData } from '@/domains/extract/hooks/useCanvasPixelData';
+import { useClusteredColor } from '@/domains/extract/hooks/useClusteredColor';
+import { useImageUpload } from '@/domains/extract/hooks/useImageUpload';
 import { RGBProp } from '@/types/color';
-import { useCanvasContext } from './useCanvasContext';
-import { useCanvasImage } from './useCanvasImage';
-import { useCanvasPixelData } from './useCanvasPixelData';
-import { useClusteredColor } from './useClusteredColor';
-import { useImageUpload } from './useImageUpload';
+
 import { useEffect } from 'react';
 
 const KMEANS_WEIGHT = 6;
