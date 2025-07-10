@@ -1,6 +1,6 @@
-import { RGBProp } from '@/types/color';
+import { LABProp } from '@/types/color';
 
-export const kMeans = (pixels: RGBProp[], k: number): RGBProp[] => {
+export const kMeans = (pixels: LABProp[], k: number): LABProp[] => {
   // K-means++로 중심점 초기화
   let centroids = kMeansPlusPlusInit(pixels, k);
 
@@ -23,8 +23,8 @@ export const kMeans = (pixels: RGBProp[], k: number): RGBProp[] => {
       if (clusterPixels.length === 0) return centroids[i];
 
       return {
-        r: Math.round(clusterPixels.reduce((sum, p) => sum + p.r, 0) / clusterPixels.length),
-        g: Math.round(clusterPixels.reduce((sum, p) => sum + p.g, 0) / clusterPixels.length),
+        l: Math.round(clusterPixels.reduce((sum, p) => sum + p.l, 0) / clusterPixels.length),
+        a: Math.round(clusterPixels.reduce((sum, p) => sum + p.a, 0) / clusterPixels.length),
         b: Math.round(clusterPixels.reduce((sum, p) => sum + p.b, 0) / clusterPixels.length),
       };
     });
@@ -35,22 +35,22 @@ export const kMeans = (pixels: RGBProp[], k: number): RGBProp[] => {
   return centroids;
 };
 
-const getDistance = (a: RGBProp, b: RGBProp): number => {
-  return Math.sqrt(Math.pow(a.r - b.r, 2) + Math.pow(a.g - b.g, 2) + Math.pow(a.b - b.b, 2));
+const getDistance = (a: LABProp, b: LABProp): number => {
+  return Math.sqrt(Math.pow(a.l - b.l, 2) + Math.pow(a.a - b.a, 2) + Math.pow(a.b - b.b, 2));
 };
 
-const areEqual = (a: RGBProp[], b: RGBProp[]): boolean => {
+const areEqual = (a: LABProp[], b: LABProp[]): boolean => {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) {
-    if (a[i].r !== b[i].r || a[i].g !== b[i].g || a[i].b !== b[i].b) {
+    if (a[i].l !== b[i].l || a[i].a !== b[i].a || a[i].b !== b[i].b) {
       return false;
     }
   }
   return true;
 };
 
-const kMeansPlusPlusInit = (pixels: RGBProp[], k: number): RGBProp[] => {
-  const centroids: RGBProp[] = [];
+const kMeansPlusPlusInit = (pixels: LABProp[], k: number): LABProp[] => {
+  const centroids: LABProp[] = [];
 
   // 첫 번째 중심점은 랜덤 선택
   centroids.push(pixels[Math.floor(Math.random() * pixels.length)]);
