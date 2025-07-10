@@ -3,3 +3,9 @@ export interface RGBProp {
   g: number;
   b: number;
 }
+
+export interface LABProp {
+  l: number;
+  a: number;
+  b: number;
+}
