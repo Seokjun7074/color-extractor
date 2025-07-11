@@ -8,9 +8,9 @@ export default function ExtractPage() {
   const { canvasRef, saveImgFile, colors, isLoading } = useColorExtractProcess();
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-4">
-      <div className="flex w-sm flex-col gap-4">
-        <canvas className="w-full rounded-md border-1 border-gray-400" ref={canvasRef}></canvas>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+      <div className="flex w-sm flex-col gap-4 p-4">
+        <canvas className="rounded-md border-1 border-gray-400" ref={canvasRef}></canvas>
         <ImageUploadButton saveImgFile={saveImgFile} />
         <ExtractedColor colors={colors} isLoading={isLoading} />
       </div>
