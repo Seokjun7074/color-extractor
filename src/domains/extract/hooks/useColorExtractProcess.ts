@@ -2,7 +2,7 @@ import { useCanvasContext } from '@/domains/extract/hooks/useCanvasContext';
 import { useCanvasImage } from '@/domains/extract/hooks/useCanvasImage';
 import { useCanvasPixelData } from '@/domains/extract/hooks/useCanvasPixelData';
 import { useClusteredColor } from '@/domains/extract/hooks/useClusteredColor';
-import { useImageUpload } from '@/domains/extract/hooks/useImageUpload';
+import { useImageUpload } from '@/hooks/useImageUpload';
 import { useKmeansWorker } from '@/domains/extract/hooks/useKmeansWorker';
 
 import { useEffect, useState } from 'react';
