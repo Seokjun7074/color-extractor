@@ -3,9 +3,28 @@ import { useEffect, useState } from 'react';
 export const useImageUpload = () => {
   const [imageURL, setImage] = useState<string | undefined>(undefined);
 
-  const saveImgFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    const file = e.target.files[0];
+  const getFileByEvent = (
+    e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>,
+  ): File | undefined => {
+    let file: File | undefined;
+
+    if ('dataTransfer' in e) {
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        file = e.dataTransfer.files[0];
+      }
+    } else if ('target' in e && (e.target as HTMLInputElement).files) {
+      const target = e.target as HTMLInputElement;
+      if (target.files && target.files.length > 0) {
+        file = target.files[0];
+      }
+    }
+    return file ?? undefined;
+  };
+
+  const saveImgFile = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
+    const file = getFileByEvent(e);
+
+    if (!file) return;
     cleanUpImageURL(imageURL);
 
     const url = URL.createObjectURL(file);
