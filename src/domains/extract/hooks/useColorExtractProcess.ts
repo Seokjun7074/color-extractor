@@ -35,10 +35,5 @@ export function useColorExtractProcess() {
     process();
   }, [imageURL]);
 
-  return {
-    canvasRef,
-    saveImgFile,
-    colors,
-    isLoading,
-  };
+  return { imageURL, canvasRef, saveImgFile, colors, isLoading };
 }
